@@ -15,6 +15,11 @@ def scrape_all():
     news_title, news_paragraph = mars_news(browser)
 
     # Run all scraping functions and store results in a dictionary
+    
+    # D2 2. In the def scrape_all() function, create a new dictionary
+            # in the data dictionary to hold a list of dictionaries with the URL string and title
+            # of each hemisphere image.
+            
     data = {
         "news_title": news_title,
         "news_paragraph": news_paragraph,
@@ -22,7 +27,7 @@ def scrape_all():
         "facts": mars_facts(),
         "last_modified": dt.datetime.now()
     }
-
+    
     # Stop webdriver and return data
     browser.quit()
     return data
@@ -84,6 +89,7 @@ def featured_image(browser):
 
 def mars_facts():
     # Add try/except for error handling
+ 
     try:
         # Use 'read_html' to scrape the facts table into a dataframe
         df = pd.read_html('https://data-class-mars-facts.s3.amazonaws.com/Mars_Facts/index.html')[0]
@@ -97,6 +103,45 @@ def mars_facts():
 
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
+
+# D2 3. Below the def mars_facts() function, create a function that will
+        # scrape the hemisphere data by using your code from the Mission_to_Mars_Challenge.py
+        # file. At the end of the function, return the scraped data as a list of dictionaries with
+        # the URL string and title of each hemisphere image.
+        
+        
+def hemi_image(browser):    
+    # Use browser to visit the URL 
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
+
+    # Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+
+    # Write code to retrieve the image urls and titles for each hemisphere.
+    html = browser.html
+    hemi_soup = soup(html, 'html.parser')
+    hemi_desc = hemi_soup.find_all('div', class_='description')
+    for hemi in hemi_desc:
+        hemi_title = hemi.h3.text
+        # a) click on each hemisphere link, 
+        hemi_img_link =hemi.find('a', class_='itemLink product-item')['href']
+        # b) navigate to the full-resolution image page, 
+        browser.visit(url + hemi_img_link)     
+        # c) retrieve the full-resolution image URL string and title for the hemisphere image
+        hemi_img_jpg = browser.find_by_text('Sample')['href']
+        # d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
+        browser.back()
+            
+        # Add the data to a list in a dictionary format
+        hemisphere_image_urls.append({"title": hemi_title,
+                            "img_url": hemi_img_jpg})
+       
+
+    # Print the list that holds the dictionary of each image url and title.
+    return hemisphere_image_urls
+
 
 if __name__ == "__main__":
 
