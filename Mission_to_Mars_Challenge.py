@@ -172,6 +172,8 @@ hemi_soup = soup(html, 'html.parser')
 hemi_desc = hemi_soup.find_all('div', class_='description')
 for hemi in hemi_desc:
     hemi_title = hemi.h3.text
+    # Create an empty dictionary, hemispheres = {}, inside the for loop.
+    hemispheres = {}
     # a) click on each hemisphere link, 
     hemi_img_link =hemi.find('a', class_='itemLink product-item')['href']
     # b) navigate to the full-resolution image page, 
@@ -180,10 +182,10 @@ for hemi in hemi_desc:
     hemi_img_jpg = browser.find_by_text('Sample')['href']
     # d) use browser.back() to navigate back to the beginning to get the next hemisphere image.
     browser.back()
-    
+    hemispheres['title'] = hemi_title
+    hemispheres['img_url'] = hemi_img_jpg    
     # Add the data to a list in a dictionary format
-    hemisphere_image_urls.append({"title": hemi_title,
-                       "img_url": hemi_img_jpg})
+    hemisphere_image_urls.append(hemispheres)
 
 
 # 4. Print the list that holds the dictionary of each image url and title.
