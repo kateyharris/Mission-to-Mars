@@ -13,21 +13,24 @@ def scrape_all():
     browser = Browser('chrome', **executable_path, headless=True)
 
     news_title, news_paragraph = mars_news(browser)
-
-    # Run all scraping functions and store results in a dictionary
+    hemisphere_image_urls = hemi_image(browser)
     
-    # D2 2. In the def scrape_all() function, create a new dictionary
-            # in the data dictionary to hold a list of dictionaries with the URL string and title
-            # of each hemisphere image.
-            
+    # Run all scraping functions and store results in a dictionary
+        
     data = {
         "news_title": news_title,
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
+        # D2 2. In the def scrape_all() function, create a new dictionary
+            # in the data dictionary to hold a list of dictionaries with the URL string and title
+            # of each hemisphere image.
+        "hemispheres": hemisphere_image_urls,
         "last_modified": dt.datetime.now()
     }
-    
+
+   
+            
     # Stop webdriver and return data
     browser.quit()
     return data
